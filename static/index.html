@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+ <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+ <title>radeaa - Augmented API f&uuml;r regenampel.de</title>
+ <style type="text/css">
+   body {
+     background-color: #000000;
+     color: #cccccc;
+   }
+   table {
+     border : solid 1px;
+     border-collapse : collapse;
+     padding-right : 5px;
+     padding-left : 5px;
+     font-weight : normal;
+   }
+   th {
+     border: solid 1px;
+     vertical-align: top;
+   }
+   td { border: solid 1px; }
+   a { color: #eeeecc; }
+   a:visited { color: #eeeeee; }
+</style>
+</head>
+<body>
+<h1>radeaa - Augmented API f&uuml;r regenampel.de</h1>
+<h2>Wat?</h2>
+<p>Diese API nimmt die Antworten der "normalen" (nicht offiziellen / nicht
+dokumentierten) Regenampel-API unter <tt>https://regenampel.de/api/data</tt>
+und reichert sie mit zus&auml;tzlichen Daten an. Denn die Original-API liefert
+nur rohe Niederschlagsmengen, die Farbe der Ampel und den erkl&auml;renden
+Text generiert dann das JavaScript auf der Seite. Das ist verdammt unpraktisch,
+wenn man diese Information zur Weiterverarbeitung braucht, z.B. weil man sich
+<a href="https://github.com/poempelfox/ledregenampel/">eine von einem
+Microcontroller gesteuerte echte Ampel</a> neben die T&uuml;r h&auml;ngen will.
+</p>
+<p>Diese Alternativ-API f&uuml;gt daher die Farbe der Ampel und die zwei
+Status-Text-Zeilen der Antwort der Original-API hinzu, der Rest der Antwort
+sollte unver&auml;ndert durchgereicht werden.</p>
+<p>Diese API versucht das nachzubauen, was das JavaScript auf regenampel.de tut.
+Sie ist in Go implementiert. Es ist zu erwarten, dass mir bei der Umsetzung
+Fehler unterlaufen sind, und die Ergebnisse nicht 100prozentig
+&uuml;bereinstimmen.</p>
+<h2>Benutzung</h2>
+<h3>Request URL</h3>
+... ist genau diese hier, also
+<a href="https://wetter.poempelfox.de/api/radeaa/">https://wetter.poempelfox.de/api/radeaa/<i>?parameter</i></a>.
+Sobald du genug request-parameter angibst wird nicht mehr diese Hilfeseite,
+sondern stattdessen eine API-Antwort erscheinen.
+<h3>Request parameter</h3>
+<p>Die Parameter sind exakt die gleichen wie in der Original-API, es gibt aber
+zwei zus&auml;tzliche:</p>
+<table>
+  <tr><th>location</th>
+      <td>Startpunkt (in exakt dem gleichen Format wie es Upstream erwartet,
+          denn es wird einfach nur durchgereicht.)</td></tr>
+  <tr><th>destination</th>
+      <td>Endpunkt (in exakt dem gleichen Format wie es Upstream erwartet,
+          denn es wird einfach nur durchgereicht.)</td></tr>
+  <tr><th>speed</th><td>Reisegeschwindigkeit (in km/h, exakt wie bei Upstream,
+          denn es wird einfach nur durchgereicht.)</td></tr>
+  <tr><th>dataformat</th>
+      <td>Entweder <tt>json</tt> (=default) oder <tt>txt</tt>. Diesen Parameter
+          gibt es Upstream nicht. Der txt-Modus wurde eingef&uuml;gt, um die
+          Verarbeitung mit Microcontrollern zu erleichtern.<br>
+          Im txt-Modus fehlen daf&uuml;r nat&uuml;rlich grosse Teile der von
+          Upstream gelieferten Information! Aber es ist sehr leicht auch auf
+          einem embedded-System parsebar. Beschreibung des Formats weiter unten.
+          </td></tr>
+  <tr><th>prewarntime</th>
+      <td>Wieviele Minuten bevor der Regen beginnt die Ampel gelb wird. Diesen
+          Parameter gibt es Upstream nicht - vielmehr ist er dort im JavaScript
+          hardcoded auf 10 Minuten.</td></tr>
+</table>
+<h3>Antwort im default-Modus (JSON)</h3>
+<p>... sieht genauso aus wie bei Upstream, enth&auml;lt aber die Folgenden
+zus&auml;tzlichen Werte im JSON:</p>
+<table>
+  <tr><th>LightColor</th>
+      <td>Die aktuelle Ampelfarbe, als integer.<br>
+          1 = Rot, 2 = Gelb, 3 = Gr&uuml;n</td></tr>
+  <tr><th>Message1<br>Message2</th>
+      <td>zus&auml;tzliche Nachricht Zeile 1 und 2, wird bei der
+          Original-Regenampel &uuml;ber der Ampel angezeigt.<br>
+          Beispiel: Zeile1 "Es verbleiben 25 Minuten"; Zeile 2 "von 18:02 bis
+          19:22 Uhr sehr starker Niederschlag"</td></tr>
+</table>
+<h3>Antwort mit dataformat=txt</h3>
+<p>Die Ausgabe ist Zeilenorientiert. Jede Zeile enth&auml;lt genau einen Wert.
+Alles ist in WTF-8 aka UTF-8.
+Enth&auml;lt bei weitem nicht alles, was die Original-API oder der JSON-Modus
+ausspuckt, weil die Antworten kurz gehalten werden sollen (f&uuml;r
+Microcontroller).
+Beispielausgabe:</p>
+<pre>LightColor=1
+Message1=Über 2 Stunden
+Message2=sehr starker Niederschlag</pre>
+<h2>Source-Code</h2>
+Der Source-Code hiervon wird vermutlich in K&uuml;rze auf sh*thub landen.
+<h2>Disclaimer</h2>
+<p>Keine offizielle API. Keine Garantien irgendwelcher Art, schon gar nicht bzgl.
+Verf&uuml;gbarkeit oder Korrektheit. Wenn sich die Original-API &auml;ndert,
+oder das JavaScript &auml;ndert, wird diese Aufsatz-API nicht mehr korrekt
+funktionieren</p>
+<h2>Kontakt</h2>
+<p>poempelfox at poempelfox punkt de</p>
+</body>
+</html>
