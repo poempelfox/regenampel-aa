@@ -90,7 +90,8 @@ zus&auml;tzlichen Werte im JSON:</p>
 </table>
 <h3>Antwort mit dataformat=txt</h3>
 <p>Die Ausgabe ist Zeilenorientiert. Jede Zeile enth&auml;lt genau einen Wert.
-Alles ist in WTF-8 aka UTF-8.
+Syntax jeder Zeile ist <tt>key=value</tt>, wobei value in keinster Weise
+gequotet oder escaped ist. Alles ist in WTF-8 aka UTF-8.
 Enth&auml;lt bei weitem nicht alles, was die Original-API oder der JSON-Modus
 ausspuckt, weil die Antworten kurz gehalten werden sollen (f&uuml;r
 Microcontroller).
@@ -99,12 +100,13 @@ Beispielausgabe:</p>
 Message1=Über 2 Stunden
 Message2=sehr starker Niederschlag</pre>
 <h2>Source-Code</h2>
-Der Source-Code hiervon wird vermutlich in K&uuml;rze auf sh*thub landen.
+Der Source-Code hiervon ist auf github verf&uuml;gbar:
+<a href="https://github.com/poempelfox/regenampel-aa">https://github.com/poempelfox/regenampel-aa</a>
 <h2>Disclaimer</h2>
 <p>Keine offizielle API. Keine Garantien irgendwelcher Art, schon gar nicht bzgl.
 Verf&uuml;gbarkeit oder Korrektheit. Wenn sich die Original-API &auml;ndert,
-oder das JavaScript &auml;ndert, wird diese Aufsatz-API nicht mehr korrekt
-funktionieren</p>
+oder das JavaScript &auml;ndert, wird diese Aufsatz-API prinzipbedingt nicht
+mehr korrekt funktionieren.</p>
 <h2>Kontakt</h2>
 <p>poempelfox at poempelfox punkt de</p>
 </body>
